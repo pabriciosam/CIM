@@ -3,7 +3,8 @@ using Dominio.Interface.Servico;
 
 namespace Dominio.Interfaces.Servico
 {
-    public interface IComputadorServico : IServicoBase<Computador>
+    public interface IAndarServico : IServicoBase<Andar>
     {
+        Andar ObterAndarPorNumero(int Numero);
     }
 }

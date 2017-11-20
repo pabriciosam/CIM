@@ -13,19 +13,29 @@ namespace Aplicacao
             _servicoBase = servicoBase;
         }
 
-        public TEntity GetById(int id)
+        public TEntity Inserir(TEntity entidade)
         {
-            return _servicoBase.GetById(id);
+            return _servicoBase.Inserir(entidade);
         }
 
-        public IEnumerable<TEntity> GetAll()
+        public void Atualizar(TEntity entidade)
         {
-            return _servicoBase.GetAll();
+            _servicoBase.Atualizar(entidade);
         }
 
-        public void Add(TEntity entidade)
+        public void Excluir(string id)
         {
-            _servicoBase.Add(entidade);
+            _servicoBase.Excluir(id);
+        }
+
+        public TEntity ObterPorId(string id)
+        {
+            return _servicoBase.ObterPorId(id);
+        }
+
+        public IEnumerable<TEntity> ObterTodos()
+        {
+            return _servicoBase.ObterTodos();
         }
     }
 }

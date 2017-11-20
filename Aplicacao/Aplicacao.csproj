@@ -32,6 +32,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,9 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AplicacaoBase.cs" />
+    <Compile Include="AndarAplicacao.cs" />
+    <Compile Include="Interface\IAndarAplicacao.cs" />
     <Compile Include="Interface\IAplicacaoBase.cs" />
-    <Compile Include="Interface\IComputadorAplicacao.cs" />
-    <Compile Include="ComputadorAplicacao.cs" />
+    <Compile Include="Interface\IEquipamentoAplicacao.cs" />
+    <Compile Include="EquipamentoAplicacao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +57,9 @@
       <Project>{CBFE6B33-C875-424A-924A-7C070B9A6D7B}</Project>
       <Name>Dominio</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

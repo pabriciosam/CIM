@@ -13,19 +13,29 @@ namespace Dominio.Servicos
             _repositorioBase = repositorioBase;
         }
 
-        public TEntity GetById(int id)
+        public TEntity Inserir(TEntity entidade)
         {
-            return _repositorioBase.GetById(id);
+            return _repositorioBase.Inserir(entidade);
         }
 
-        public IEnumerable<TEntity> GetAll()
+        public void Atualizar(TEntity entidade)
         {
-            return _repositorioBase.GetAll();
+            _repositorioBase.Atualizar(entidade);
         }
 
-        public void Add(TEntity entidade)
+        public void Excluir(string id)
         {
-            _repositorioBase.Add(entidade);
+            _repositorioBase.Excluir(id);
         }
+
+        public TEntity ObterPorId(string id)
+        {
+            return _repositorioBase.ObterPorId(id);
+        }
+
+        public IEnumerable<TEntity> ObterTodos()
+        {
+            return _repositorioBase.ObterTodos();
+        }   
     }
 }
