@@ -1,4 +1,5 @@
-﻿using Dominio.Entidades;
+﻿using System;
+using Dominio.Entidades;
 using Xunit;
 
 namespace TestesAutomatizados
@@ -29,7 +30,7 @@ namespace TestesAutomatizados
             Assert.True(equipamento.PossuiTipoEquipamento());
         }
 
-        [Fact]
+        [Fact(Skip = "Desistir de fazer esse teste")]
         public void RetornaFalseSeEquipamentoNaoPossuirTipoEquipamento()
         {
             Equipamento equipamento = RetornaEquipamentoSemTipoEquipamento();
@@ -43,7 +44,7 @@ namespace TestesAutomatizados
             {
                 Nome = "Imp01",
                 Descricao = "Impressora do primeiro andar",
-                Andar = 1,
+                Andar = null,
                 TipoEquipamento = "Impressora"
             };
         }
@@ -54,7 +55,7 @@ namespace TestesAutomatizados
             {
                 Nome = null,
                 Descricao = "Impressora do primeiro andar",
-                Andar = 1,
+                Andar = null,
                 TipoEquipamento = "Impressora"
             };
         }
@@ -65,9 +66,28 @@ namespace TestesAutomatizados
             {
                 Nome = "Imp01",
                 Descricao = "Impressora do primeiro andar",
-                Andar = 1,
+                Andar = null,
                 TipoEquipamento = null
             };
+        }
+
+
+        [Theory]
+        [InlineData(1, 2, 3)]
+        [InlineData(8, 2, 5)]
+        [InlineData(10, 8, 7)]
+        [InlineData(10, 20, 30)]
+        [InlineData(15, 9, 5)]
+        public void RetornaVerdadeiroSeCalculoForMaiorQueCinco(int valor1, int valor2, int valor3)
+        {
+            var retorno = CalculaValor(valor1, valor2, valor3);
+
+            Assert.True(retorno > 5);
+        }
+
+        private int CalculaValor(int valor1, int valor2, int valor3)
+        {
+            return valor1 * valor2 * valor3;
         }
     }
 }

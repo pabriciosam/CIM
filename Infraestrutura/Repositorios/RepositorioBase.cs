@@ -68,26 +68,54 @@ namespace Infraestrutura.Repositorios
 
         public IEnumerable<TEntity> ObterTodos()
         {
-            return colecao.AsQueryable();
+            try
+            {
+                return colecao.AsQueryable();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("RepositorioBase: Erro ao obter todos os dados. ", ex);
+            }
         }
 
         public TEntity ObterPorId(string id)
         {
-            var filtro = ObterFiltroPorId(id);
+            try
+            {
+                var filtro = ObterFiltroPorId(id);
 
-            return colecao.Find(filtro).FirstOrDefault();
+                return colecao.Find(filtro).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("RepositorioBase: Erro ao obter o equipamento " + id, ex);
+            }
         }
 
         private FilterDefinition<TEntity> ObterFiltroPorId(TEntity entidade)
         {
-            var valor = typeof(TEntity).GetProperties().FirstOrDefault(x => x.Name == "Id").GetValue(entidade).ToString();
+            try
+            {
+                var valor = typeof(TEntity).GetProperties().FirstOrDefault(x => x.Name == "Id").GetValue(entidade).ToString();
 
-            return ObterFiltroPorId(valor);
+                return ObterFiltroPorId(valor);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("RepositorioBase: Erro ao obter filtro por ID", ex);
+            }
         }
 
         private FilterDefinition<TEntity> ObterFiltroPorId(string id)
         {
-            return Builders<TEntity>.Filter.Eq("_id", ObjectId.Parse(id));
+            try
+            {
+                return Builders<TEntity>.Filter.Eq("_id", ObjectId.Parse(id));
+            }
+            catch (FormatException fe)
+            {
+                throw new FormatException("RepositorioBase: O ID não está em um formato correto", fe);
+            }
         }
     }
 }

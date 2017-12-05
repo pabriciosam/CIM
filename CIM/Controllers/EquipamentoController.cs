@@ -12,12 +12,8 @@ namespace CIM.Controllers
     {
         private readonly IEquipamentoAplicacao _equipamentoAplicacao;
         private readonly IAndarAplicacao _andarAplicacao;
-
-        enum Operacao
-        {
-            Inclusao = 1,
-            Alteracao = 2
-        }
+        private readonly Validacao _validacao = new Validacao();
+        private readonly TrataExcessoes _trataExcessoes = new TrataExcessoes();
 
         public EquipamentoController(IEquipamentoAplicacao equipamentoAplicacao, IAndarAplicacao andarAplicacao)
         {
@@ -26,7 +22,7 @@ namespace CIM.Controllers
         }
 
         [HttpPost]
-        [Route("equipamento")]
+        [Route("equipamentos")]
         public HttpResponseMessage InserirEquipamento(Equipamento equipamento)
         {
             try
@@ -35,7 +31,7 @@ namespace CIM.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Não é possível inserir equipamento nulo.");
                 else
                 {
-                    var retorno = Validar(equipamento, Operacao.Inclusao);
+                    var retorno = _validacao.ValidarEquipamento(equipamento, Validacao.Operacao.Inclusao);
 
                     if (!string.IsNullOrWhiteSpace(retorno))
                         return Request.CreateResponse(HttpStatusCode.BadRequest, retorno);
@@ -50,12 +46,12 @@ namespace CIM.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Erro ao inserir equipamento. " + TodasAsExcessoes(ex));
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Erro ao inserir equipamento. " + _trataExcessoes.RetornaTodasAsExcessoes(ex));
             }
         }
 
         [HttpPut]
-        [Route("equipamento")]
+        [Route("equipamentos")]
         public HttpResponseMessage AtualizarEquipamento(Equipamento equipamento)
         {
             try
@@ -64,7 +60,7 @@ namespace CIM.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Não é possível alterar equipamento nulo.");
                 else
                 {
-                    var retorno = Validar(equipamento, Operacao.Alteracao);
+                    var retorno = _validacao.ValidarEquipamento(equipamento, Validacao.Operacao.Alteracao);
 
                     if (!string.IsNullOrWhiteSpace(retorno))
                         return Request.CreateResponse(HttpStatusCode.BadRequest, retorno);
@@ -81,12 +77,12 @@ namespace CIM.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Erro ao alterar equipamento. " + TodasAsExcessoes(ex));
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Erro ao alterar equipamento. " + _trataExcessoes.RetornaTodasAsExcessoes(ex));
             }
         }
 
         [HttpDelete]
-        [Route("equipamento")]
+        [Route("equipamentos")]
         public HttpResponseMessage ExcluirEquipamento(string id)
         {
             try
@@ -102,85 +98,84 @@ namespace CIM.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Erro ao excluir equipamento. " + TodasAsExcessoes(ex));
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Erro ao excluir equipamento. " + _trataExcessoes.RetornaTodasAsExcessoes(ex));
             }
         }
 
         [HttpGet]
-        [Route("equipamento")]
+        [Route("equipamentos")]
         public HttpResponseMessage ObterTodosEquipamentos()
         {
-            var equipamentos = _equipamentoAplicacao.ObterTodos();
+            try
+            {
+                var equipamentos = _equipamentoAplicacao.ObterTodos();
 
-            if (equipamentos == null)
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Nenhum equipamento encontrado.");
+                if (equipamentos == null)
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Nenhum equipamento encontrado.");
 
-            return Request.CreateResponse(HttpStatusCode.OK, equipamentos);
+                return Request.CreateResponse(HttpStatusCode.OK, equipamentos);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Erro ao obter todos os equipamentos. " + _trataExcessoes.RetornaTodasAsExcessoes(ex));
+            }
         }
 
         [HttpGet]
-        [Route("equipamento/{ID}")]
+        [Route("equipamentos/{ID}")]
         public HttpResponseMessage ObterEquipamentoPorId(string id)
         {
-            var equipamento = _equipamentoAplicacao.ObterPorId(id);
+            try
+            {
+                var equipamento = _equipamentoAplicacao.ObterPorId(id);
 
-            if (equipamento == null)
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Nenhum equipamento encontrado.");
+                if (equipamento == null)
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Nenhum equipamento encontrado.");
 
-            return Request.CreateResponse(HttpStatusCode.OK, equipamento);
+                return Request.CreateResponse(HttpStatusCode.OK, equipamento);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Erro ao obter o equipamento: " + id + _trataExcessoes.RetornaTodasAsExcessoes(ex));
+            }
         }
 
         [HttpGet]
-        [Route("equipamento/livre")]
+        [Route("equipamentos/livres")]
         public HttpResponseMessage ObterEquipamentosLivres()
         {
-            var equipamentos = _equipamentoAplicacao.ObterEquipamentosLivres();
+            try
+            {
+                var equipamentos = _equipamentoAplicacao.ObterEquipamentosLivres();
 
-            if (equipamentos == null)
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Nenhum equipamento encontrado.");
+                if (equipamentos == null)
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Nenhum equipamento encontrado.");
 
-            return Request.CreateResponse(HttpStatusCode.OK, equipamentos);
+                return Request.CreateResponse(HttpStatusCode.OK, equipamentos);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter equipamentos livres: " + _trataExcessoes.RetornaTodasAsExcessoes(ex));
+            }
         }
 
         [HttpGet]
-        [Route("equipamento/imobilizado")]
+        [Route("equipamentos/imobilizados")]
         public HttpResponseMessage ObterEquipamentosImobilizados()
         {
-            var equipamentos = _equipamentoAplicacao.ObterEquipamentosImobilizados();
-
-            if (equipamentos == null)
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Nenhum equipamento encontrado.");
-
-            return Request.CreateResponse(HttpStatusCode.OK, equipamentos);
-        }
-
-        private string Validar(Equipamento equipamento, Operacao operacao)
-        {
-            string retorno = null;
-
-            if ((operacao == Operacao.Alteracao) && string.IsNullOrWhiteSpace(equipamento.Id))
-                retorno = "Informe o ID do equipamento a ser alterado.";
-
-            if (!equipamento.PossuiNome())
-                retorno += " Informe o nome do equipamento.";
-
-            if (!equipamento.PossuiTipoEquipamento())
-                retorno += " Informe o tipo do equipamento.";
-
-            return retorno;
-        }
-
-        private string TodasAsExcessoes(Exception ex)
-        {
-            var mensagem = String.Empty;
-
-            while (ex != null)
+            try
             {
-                mensagem += ex.Message;
-                ex = ex.InnerException;
-            }
+                var equipamentos = _equipamentoAplicacao.ObterEquipamentosImobilizados();
 
-            return mensagem;
+                if (equipamentos == null)
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Nenhum equipamento encontrado.");
+
+                return Request.CreateResponse(HttpStatusCode.OK, equipamentos);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter equipamentos imobilizados: " + _trataExcessoes.RetornaTodasAsExcessoes(ex));
+            }
         }
     }
 }

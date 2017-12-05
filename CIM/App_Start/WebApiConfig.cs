@@ -1,7 +1,6 @@
 ﻿using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Net.Http.Formatting;
 using System.Web.Http;
 
 namespace CIM

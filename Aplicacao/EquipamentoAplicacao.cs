@@ -38,9 +38,7 @@ namespace Aplicacao
                 {
                     var equipamento = _equipamentoServico.ObterPorId(equipamentoId);
 
-                    var andar = _andarAplicacao.ObterAndarPorNumero(Convert.ToInt32(equipamento.Andar));
-
-                    if (andar.Privado)
+                    if (equipamento.Andar.Privado)
                         equipamentoEmAndarPrivado += equipamentoId + " - ";
                     else if (!equipamento.StatusAcesso)
                         equipamentosImobilizados += equipamentoId + " - ";

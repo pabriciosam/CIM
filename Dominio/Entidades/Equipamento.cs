@@ -11,7 +11,7 @@ namespace Dominio.Entidades
         public string Id { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
-        public int? Andar { get; set; }
+        public Andar Andar { get; set; }
         public string TipoEquipamento { get; set; }
         public bool StatusAcesso { get; set; }
         public List<string> EquipamentosAcessados { get; set; }
